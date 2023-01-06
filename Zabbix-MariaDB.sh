@@ -32,7 +32,7 @@ fi
 #
 if [ -n "${1}" -a -z "${2}" ]; then
     # Setup root password
-    CURRENT_MYSQL_PASSWORD=''
+    CURRENT_MYSQL_PASSWORD='zabbixDBpass'
     NEW_MYSQL_PASSWORD="${1}"
 elif [ -n "${1}" -a -n "${2}" ]; then
     # Change existens root password
@@ -40,8 +40,8 @@ elif [ -n "${1}" -a -n "${2}" ]; then
     NEW_MYSQL_PASSWORD="${2}"
 else
     echo "Usage:"
-    echo "  Setup mysql root password: ${0} 'zabbixpass'"
-    echo "  Change mysql root password: ${0} 'zabbixpass' 'zabbixpass'"
+    echo "  Setup mysql root password: ${0} 'zabbixDBpass'"
+    echo "  Change mysql root password: ${0} 'zabbixDBpass' 'zabbixDBpass'"
     exit 1
 fi
 
@@ -1113,7 +1113,7 @@ echo "# This is a configuration file for Zabbix server daemon
  1015 #
  1016 # Mandatory: no
  1017 # Default: 
- 1018 # NodeAddress=localhost:10051" >> /etc/zabbix/zabbix_server.conf
+ 1018 # NodeAddress=localhost:10051" > /etc/zabbix/zabbix_server.conf
 
 # Habilitando e iniciando serviços Zabbix
 
