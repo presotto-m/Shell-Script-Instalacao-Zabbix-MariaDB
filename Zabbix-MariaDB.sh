@@ -17,76 +17,17 @@ systemctl enable mariadb
 
 # Configurado MariaDB
 
-PURGE_EXPECT_WHEN_DONE=0
-
-#
-# Check the bash shell script is being run by root
-#
-if [[ $EUID -ne 0 ]]; then
-   echo "This script must be run as root" 1>&2
-   exit 1
-fi
-
-#
-# Check input params
-#
-if [ -n "${1}" -a -z "${2}" ]; then
-    # Setup root password
-    CURRENT_MYSQL_PASSWORD='zabbixDBpass'
-    NEW_MYSQL_PASSWORD="${1}"
-elif [ -n "${1}" -a -n "${2}" ]; then
-    # Change existens root password
-    CURRENT_MYSQL_PASSWORD="${1}"
-    NEW_MYSQL_PASSWORD="${2}"
-else
-    echo "Usage:"
-    echo "  Setup mysql root password: ${0} 'zabbixDBpass'"
-    echo "  Change mysql root password: ${0} 'zabbixDBpass' 'zabbixDBpass'"
-    exit 1
-fi
-
-#
-# Check is expect package installed
-#
-if [ $(dpkg-query -W -f='${Status}' expect 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
-    echo "Can't find expect. Trying install it..."
-    aptitude -y install expect
-
-fi
-
-SECURE_MYSQL=$(expect -c "
-set timeout 3
-spawn mysql_secure_installation
-expect \"Enter current password for root (enter for none):\"
-send \"$zabbixDBpass\r\"
-expect \"root password?\"
-send \"y\r\"
-expect \"New password:\"
-send \"$zabbixDBpass\r\"
-expect \"Re-enter new password:\"
-send \"$zabbixDBpass\r\"
-expect \"Remove anonymous users?\"
-send \"y\r\"
-expect \"Disallow root login remotely?\"
-send \"y\r\"
-expect \"Remove test database and access to it?\"
-send \"y\r\"
-expect \"Reload privilege tables now?\"
-send \"y\r\"
-expect eof
-")
-
-#
-# Execution mysql_secure_installation
-#
-echo "${SECURE_MYSQL}"
-
-if [ "${PURGE_EXPECT_WHEN_DONE}" -eq 1 ]; then
-    # Uninstalling expect package
-    aptitude -y purge expect
-fi
-
-exit 0
+# Certifique-se de que NINGUÉM pode acessar o servidor sem uma senha
+mysql -e "UPDATE mysql.user SET Password = PASSWORD(' zabbixDBpass ') WHERE User = 'root'"
+# Mate os usuários anônimos
+mysql -e "DROP USER ''@'localhost'"
+# Como nosso nome de host varia, usaremos alguma magia Bash aqui.
+mysql -e "DROP USER ''@'$(hostname)'"
+# Elimine o banco de dados de demonstração
+mysql -e "teste DROP DATABASE"
+# Faça nossas alterações entrarem em vigor
+mysql -e "FLUSH PRIVILEGES"
+# Qualquer tentativa subsequente de executar consultas dessa maneira terá acesso negado devido à falta de parâmetro usr/pwd
 
 # Create database
 mysql -uroot -p'rootDBpass' -e "create database zabbix character set utf8mb4 collate utf8mb4_bin;"
