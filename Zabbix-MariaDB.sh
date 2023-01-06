@@ -16,18 +16,7 @@ systemctl start mariadb
 systemctl enable mariadb
 
 # Configurado MariaDB
-
-# Certifique-se de que NINGUÉM pode acessar o servidor sem uma senha
-mysql -e "UPDATE mysql.user SET Password = PASSWORD(' zabbixDBpass ') WHERE User = 'root'"
-# Mate os usuários anônimos
-mysql -e "DROP USER ''@'localhost'"
-# Como nosso nome de host varia, usaremos alguma magia Bash aqui.
-mysql -e "DROP USER ''@'$(hostname)'"
-# Elimine o banco de dados de demonstração
-mysql -e "teste DROP DATABASE"
-# Faça nossas alterações entrarem em vigor
-mysql -e "FLUSH PRIVILEGES"
-# Qualquer tentativa subsequente de executar consultas dessa maneira terá acesso negado devido à falta de parâmetro usr/pwd
+mysql_secure_installation
 
 # Create database
 mysql -uroot -p'rootDBpass' -e "create database zabbix character set utf8mb4 collate utf8mb4_bin;"
