@@ -11,7 +11,7 @@ Quaisquer sugestões e contribuições são bem-vindas.
 
 # Como usar isso?
 
-* chmod +u zabbix.sh
+* chmod +x zabbix.sh
 
 * sudo ./zabbix.sh
 
