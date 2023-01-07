@@ -13,7 +13,7 @@ Quaisquer sugestões e contribuições são bem-vindas.
 
 * chmod +x zabbix.sh
 
-* sudo ./zabbix.sh
+* sudo ./zabbix-mariadb.sh
 
 ## Instalação completa
 
