@@ -11,7 +11,7 @@ Quaisquer sugestões e contribuições são bem-vindas.
 
 # Como usar isso?
 
-* chmod +x zabbix.sh
+* chmod +x zabbix-mariadb.sh
 
 * sudo ./zabbix-mariadb.sh
 
